@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_sizebox.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_text_widget.dart';
 
@@ -16,15 +17,15 @@ class RichTextCustom extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      spacing: 5,
+      spacing: 5.w,
       children: [
-        CustomTextWidget(text: firstName),
+        CustomTextWidget(text: firstName,fontSize: 15.spMin,),
 
         GestureDetector(
             onTap: (){
               callback!();
             },
-            child: CustomTextWidget(text:secondName,color: AppColor.primaryColor,)),
+            child: CustomTextWidget(text:secondName,fontSize: 15.spMin,color: AppColor.primaryColor,)),
       ],
     );
   }

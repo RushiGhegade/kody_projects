@@ -20,13 +20,13 @@ class ActionButton extends StatelessWidget {
         callback();
       },
       style: ElevatedButton.styleFrom(
-        fixedSize: Size(MediaQuery.sizeOf(context).width, 50.h),
+        fixedSize: Size(MediaQuery.sizeOf(context).width, 50.spMin),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.r),
         ),
         backgroundColor: AppColor.secondaryColor,
       ),
-      child: CustomTextWidget(text: text),
+      child: CustomTextWidget(text: text,fontSize: 17.spMin,),
     );
   }
 }
