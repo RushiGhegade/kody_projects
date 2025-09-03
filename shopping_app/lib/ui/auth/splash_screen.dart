@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
+import 'package:shopping_app/framework/utils/local_database_hive.dart';
 import 'package:shopping_app/framework/utils/local_database_sharedpreferance.dart';
 
 import 'package:shopping_app/ui/utils/widgets/custom_Navigation.dart';
@@ -19,17 +20,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(seconds: 3),()async{
-      ref.read(productListProvider.notifier).addData();
+    Future.delayed(Duration(seconds: 1),()async{
+      LocalDatabaseHive.getFirstTimeData((await LocalDataBaseSharedPref.getCredential()).id);
+      Future.delayed(Duration(seconds: 3),()async{
+
         if(await LocalDataBaseSharedPref.isUserLogin()){
           print("Login");
           CustomNavigation.homeScreen(context);
         }else{
           print("Not Login");
           CustomNavigation.loginScreen(context);
+          // CustomNavigation.homeScreen(context);
         }
-
+        ref.read(productListProvider.notifier).addData();
+      });
     });
+
+
   }
 
   @override

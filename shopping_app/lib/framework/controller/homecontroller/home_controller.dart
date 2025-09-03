@@ -5,7 +5,7 @@ import 'package:shopping_app/framework/repository/homerepository/model/productmo
 
 import '../../repository/homerepository/enums/categories.dart';
 
-final productListProvider = StateNotifierProvider((ref){
+final productListProvider = StateNotifierProvider<Product,StoreProduct>((ref){
     return Product();
 });
 
@@ -23,6 +23,60 @@ class Product extends StateNotifier<StoreProduct>{
     fetchFilterList();
   }
 
+
+
+  // get add to cart List
+  void getAddToCartList(){
+
+    state = state.copyWith(filterProduct:[ ...state.allProducts.where((ele) {
+
+      return ele.addToCart;
+    } ).toList()]);
+
+  }
+
+  // add product to add to cart
+  void addProductTOCart(String proId,ProductDetails product1){
+
+    for(int i=0;i<products.length;i++){
+      if(products[i].productId==product1.productId){
+        products[i].addToCart = true;
+        break;
+      }
+    }
+
+    addData();
+    fetchFilterList();
+  }
+
+  void fetchFirstTimeData(String userId){
+
+
+
+  }
+
+  void addProductQuantity(ProductDetails product1,int quantity){
+
+
+
+    if(quantity==0){
+      for(int i=0;i<products.length;i++){
+        if(products[i].productId==product1.productId){
+          products[i].addToCart = false;
+          break;
+        }
+      }
+    }else{
+      for(int i=0;i<products.length;i++){
+        if(products[i].productId==product1.productId){
+          products[i].quantity = quantity;
+          break;
+        }
+      }
+    }
+
+    addData();
+  }
 
 
 }

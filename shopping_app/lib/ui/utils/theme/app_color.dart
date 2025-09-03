@@ -13,6 +13,7 @@ class AppColor{
 
   static const white = Colors.white;
   static const black = Colors.black;
+  static const yellow = Colors.yellow;
 
 
 }

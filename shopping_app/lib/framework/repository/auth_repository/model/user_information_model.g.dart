@@ -59,7 +59,7 @@ class UserProductInformationAdapter
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return UserProductInformation(
-      productId: fields[0] as int,
+      productId: fields[0] as String,
       isCart: fields[1] as bool,
       order: fields[2] as bool,
       quantity: fields[3] as int,

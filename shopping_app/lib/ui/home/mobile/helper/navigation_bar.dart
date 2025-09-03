@@ -1,20 +1,25 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
+import 'package:shopping_app/framework/controller/homecontroller/select_category.dart';
+import 'package:shopping_app/ui/utils/widgets/custom_Navigation.dart';
 
 import '../../../utils/theme/app_color.dart';
 import '../../../utils/widgets/custom_Icon.dart';
 
-class CustomBottomNavigationBar extends StatefulWidget {
+class CustomBottomNavigationBar extends ConsumerStatefulWidget {
   const CustomBottomNavigationBar({super.key});
 
   @override
-  State<CustomBottomNavigationBar> createState() => _CustomBottomNavigationBarState();
+  ConsumerState<CustomBottomNavigationBar> createState() => _CustomBottomNavigationBarState();
 }
 
-class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
-  int selectedIndex=0;
+class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigationBar> {
+
   @override
   Widget build(BuildContext context) {
+    int selectedIndex = ref.watch(selectedIndexProvider);
     return BottomNavigationBar(
       elevation: 10,
       backgroundColor: AppColor.primaryColor,
@@ -24,18 +29,23 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       selectedItemColor: AppColor.secondaryColor,
       unselectedItemColor: AppColor.black,
       onTap: (index){
-        selectedIndex = index;
-        setState(() {
-        });
+        ref.read(selectedIndexProvider.notifier).state = index;
+        if(index==0){
+          ref.read(productListProvider.notifier).fetchFilterList();
+          CustomNavigation.homeScreen(context);
+        }else if(index==1){
+          // CustomNavigation.
+        }
       },
       items: [
-        BottomNavigationBarItem(icon: selected(Icons.home_outlined,Icons.home,0),label: "Products"),
-        BottomNavigationBarItem(icon:selected(Icons.category_outlined,Icons.category,1) ,label: "Order"),
-        BottomNavigationBarItem(icon:selected(Icons.perm_identity,Icons.person,2) ,label: "Profile"),
+        BottomNavigationBarItem(icon: selected(Icons.list_alt,Icons.border_all,0,selectedIndex),label: "Products"),
+        BottomNavigationBarItem(icon:selected(Icons.shopping_cart_outlined,Icons.shopping_cart,1,selectedIndex) ,label: "Order"),
+        BottomNavigationBarItem(icon:selected(Icons.perm_identity,Icons.person,2,selectedIndex) ,label: "Profile"),
       ],
     );
   }
-  Widget selected(IconData icon,IconData icon1,int positionIndex ){
+  Widget selected(IconData icon,IconData icon1,int positionIndex ,int selectedIndex){
+
     return (positionIndex == selectedIndex) ?Container(
         padding: EdgeInsets.symmetric(vertical: 5,horizontal: 5),
         decoration: BoxDecoration(

@@ -1,17 +1,30 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
+import 'package:shopping_app/framework/controller/auth_controller/auth_controllers.dart';
+import 'package:shopping_app/framework/repository/auth_repository/model/user_information_model.dart';
+import 'package:shopping_app/framework/utils/local_database_hive.dart';
 
-final getHiveDataController = StateNotifierProvider<HiveData,List<String>>((ref){
+final getHiveDataProvider = StateNotifierProvider<HiveData,List<User>>((ref){
 
-  return HiveData();
+  final getId = ref.read(getUserCredential);
+
+  return HiveData(getId.value!.id);
 
 });
 
-class HiveData extends StateNotifier<List<String>>{
+class HiveData extends StateNotifier<List<User>>{
 
-  HiveData() : super([]);
+  String id;
 
+  HiveData(this.id) : super([]);
+
+
+  void getDataFromHive()async{
+
+    state = await  LocalDatabaseHive.getData(id);
+
+
+  }
 
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shopping_app/framework/controller/auth_controller/auth_controllers.dart';
 import 'package:shopping_app/framework/utils/hive_init.dart';
+import 'package:shopping_app/framework/utils/local_database_hive.dart';
 import 'package:shopping_app/framework/utils/local_database_sharedpreferance.dart';
 import 'package:shopping_app/ui/auth/splash_screen.dart';
 import 'package:shopping_app/ui/utils/theme/app_theme.dart';
@@ -20,11 +21,26 @@ void main()async{
   );
 }
 
-class MyApp extends ConsumerWidget {
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return ScreenUtilInit(
       child: ProviderScope(
         child: MaterialApp(
@@ -37,3 +53,14 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
+
+//
+// class MyApp extends ConsumerWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context,WidgetRef ref) {
+//
+//
+//   }
+// }

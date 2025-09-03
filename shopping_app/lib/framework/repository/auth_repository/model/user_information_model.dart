@@ -23,7 +23,7 @@ class User{
 class UserProductInformation{
 
   @HiveField(0)
-  int productId;
+  String productId;
 
   @HiveField(1)
   bool isCart;
