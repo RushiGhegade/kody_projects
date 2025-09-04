@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shopping_app/framework/controller/auth_controller/auth_controllers.dart';
 import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
 import 'package:shopping_app/framework/repository/homerepository/model/productmodel.dart';
 import 'package:shopping_app/ui/home/mobile/helper/navigation_bar.dart';
@@ -46,6 +47,8 @@ class _AddToCartState extends ConsumerState<AddToCart> {
   @override
   Widget build(BuildContext context) {
 
+    final getcredentail = ref.watch(getUserCredential);
+
     return Scaffold(
 
       appBar: PreferredSize(
@@ -62,36 +65,49 @@ class _AddToCartState extends ConsumerState<AddToCart> {
         child: Center(child: CustomTextWidget(text: "No Add to cart",)),
       ) :SingleChildScrollView(
           padding: EdgeInsets.all(10),
-          child:SizedBox(
-            height: MediaQuery.of(context).size.height-190,
-            child: Stack(
-              children: [
-                ShowCart(flag: false,myOrders: cart!,callback: (){
-                },),
+          child:getcredentail.when(data: (data){
+            return SizedBox(
+              height: MediaQuery.of(context).size.height-190,
+              child: Stack(
+                children: [
+                  ShowCart(flag: false,myOrders: cart!,callback: (){
+                  },),
 
-                Positioned(
-                    bottom: 0,
-                    left: 0,
-                    child:Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: AppColor.secondaryColor,
-                      ),
-                      width: MediaQuery.of(context).size.width-20,
-                      child: CustomButton(
-                        color: AppColor.secondaryColor,
-                        title: "Check out", callback: (){
-                        ref.read(productListProvider.notifier).getAddToCartList();
-                          CustomNavigation.checkoutScreen(context);
-                      },size: Size(150, 30),),
-                    )
-                ),
+                  Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child:Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppColor.secondaryColor,
+                        ),
+                        width: MediaQuery.of(context).size.width-20,
+                        child: CustomButton(
+                          color: AppColor.secondaryColor,
+                          title: "Check out", callback: (){
+                            if(data.isLogin){
+                              ref.read(productListProvider.notifier).getAddToCartList();
+                              CustomNavigation.checkoutScreen(context);
+                            }else{
+                              CustomNavigation.loginScreen(context);
+                            }
+
+                        },size: Size(150, 30),),
+                      )
+                  ),
 
 
-              ],
-            ),
-          )
+                ],
+              ),
+            );
+
+          }, error: (obj,st){
+            return CustomTextWidget(text:"${st}" );
+          }, loading: (){
+            return Center(child: CircularProgressIndicator(),);
+          }),
+
       ),
       bottomNavigationBar: CustomBottomNavigationBar(),
     );

@@ -18,6 +18,7 @@ import 'package:shopping_app/ui/utils/widgets/custom_Icon.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_Navigation.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_snackar.dart';
 
+import '../../../../framework/utils/local_database_hive.dart';
 import '../../../helper/check_screen_layout.dart';
 import '../../../utils/widgets/custom_sizebox.dart';
 import '../../../utils/widgets/custom_text_widget.dart';
@@ -140,6 +141,7 @@ class _CreateaccountScreenMobileState extends State<CreateaccountScreenMobile> {
 
                     LocalDataBaseSharedPref.storeLoginInfo(true);
                     LocalDataBaseSharedPref.storeCurrentUserLoginId(user.id);
+                    LocalDatabaseHive.getFirstTimeData(userNameTextEditingController.text);
                     CustomNavigation.homeScreen(context);
                     CustomSnackBar.showMySnackBar(context, "Account Created Sucessfully", AppColor.successColor);
                   }else{

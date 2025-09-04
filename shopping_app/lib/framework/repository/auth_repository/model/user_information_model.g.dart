@@ -60,6 +60,8 @@ class UserProductInformationAdapter
     };
     return UserProductInformation(
       productId: fields[0] as String,
+      orderFilter: fields[5] as OrderFilter?,
+      orderQuality: fields[4] as int?,
       isCart: fields[1] as bool,
       order: fields[2] as bool,
       quantity: fields[3] as int,
@@ -69,7 +71,7 @@ class UserProductInformationAdapter
   @override
   void write(BinaryWriter writer, UserProductInformation obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.productId)
       ..writeByte(1)
@@ -77,7 +79,11 @@ class UserProductInformationAdapter
       ..writeByte(2)
       ..write(obj.order)
       ..writeByte(3)
-      ..write(obj.quantity);
+      ..write(obj.quantity)
+      ..writeByte(4)
+      ..write(obj.orderQuality)
+      ..writeByte(5)
+      ..write(obj.orderFilter);
   }
 
   @override
@@ -127,6 +133,50 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is UserInformationAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class OrderFilterAdapter extends TypeAdapter<OrderFilter> {
+  @override
+  final int typeId = 3;
+
+  @override
+  OrderFilter read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return OrderFilter.Pending;
+      case 1:
+        return OrderFilter.Shipped;
+      case 2:
+        return OrderFilter.Delivered;
+      default:
+        return OrderFilter.Pending;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, OrderFilter obj) {
+    switch (obj) {
+      case OrderFilter.Pending:
+        writer.writeByte(0);
+        break;
+      case OrderFilter.Shipped:
+        writer.writeByte(1);
+        break;
+      case OrderFilter.Delivered:
+        writer.writeByte(2);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OrderFilterAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

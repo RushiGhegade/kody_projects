@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shopping_app/framework/controller/auth_controller/auth_controllers.dart';
+import 'package:shopping_app/framework/utils/local_database_hive.dart';
 import 'package:shopping_app/ui/home/mobile/helper/navigation_bar.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_Navigation.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_snackar.dart';
@@ -47,6 +49,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final val = ref.watch(getUserCredential);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(65.spMin),
@@ -95,11 +98,14 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         SizedBox(width: 10,),
                         CustomTextWidget(text: 'Amount :  $amount', color: AppColor.black,),
                         Spacer(),
-
                         CustomButton(
                           color: AppColor.secondaryColor,
-                          title: "Buy", callback: () {
+                          title: "Buy", callback: () async{
 
+
+                          await LocalDatabaseHive.clearCartAndOrder((val.value)!.id);
+
+                          ref.read(productListProvider.notifier).addData();
                           CustomSnackBar.showMySnackBar(
                               context, "Order Placed Successfully",
                               AppColor.successColor);
@@ -124,4 +130,5 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
     );
   }
+
 }

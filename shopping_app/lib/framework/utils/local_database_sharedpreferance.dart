@@ -10,7 +10,15 @@ class LocalDataBaseSharedPref{
   // store status of the userLogin
   static void storeLoginInfo(bool isLogin)async{
     SharedPreferences sharedPreferences = await  SharedPreferences.getInstance();
+    print("login true");
     sharedPreferences.setBool(USERSTATUSKEY,isLogin);
+  }
+
+  // clear shared preferance data
+  static void clearPrefs()async{
+    SharedPreferences sharedPreferences = await  SharedPreferences.getInstance();
+    sharedPreferences.clear();
+    print("Clear pref data");
   }
 
   // store the LoginUserId
@@ -34,8 +42,10 @@ class LocalDataBaseSharedPref{
   static Future<Credential> getCredential()async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if(sharedPreferences.containsKey(USERSTATUSKEY)){
+
       bool isLogin =   sharedPreferences.getBool(USERSTATUSKEY)!;
-      String userId =   sharedPreferences.getString(CURRENTLOGINUSERID)!;
+      print("---------------------------- ${isLogin}");
+      String userId =  sharedPreferences.getString(CURRENTLOGINUSERID)!;
       return Credential(isLogin: isLogin, id: userId);
     }
     return Credential(isLogin: false, id: "");

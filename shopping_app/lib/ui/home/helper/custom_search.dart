@@ -1,22 +1,27 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
 import 'package:shopping_app/ui/utils/theme/app_color.dart';
 
 import '../../../framework/controller/app_controller/app_controller.dart';
 import '../../utils/widgets/custom_Icon.dart';
 
-class SearchTextField extends StatefulWidget {
+class SearchTextField extends ConsumerStatefulWidget {
   const SearchTextField({super.key});
 
   @override
-  State<SearchTextField> createState() => _SearchTextFieldState();
+  ConsumerState<SearchTextField> createState() => _SearchTextFieldState();
 }
 
-class _SearchTextFieldState extends State<SearchTextField> {
+class _SearchTextFieldState extends ConsumerState<SearchTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: (v){
+        ref.read(productListProvider.notifier).searchFilter(v.toString());
+      },
       controller: AppController.searchController,
       decoration: InputDecoration(
           prefixIcon: CustomIcon(iconData: Icons.search,size: 24.spMin,),

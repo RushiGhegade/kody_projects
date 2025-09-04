@@ -5,8 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shopping_app/framework/controller/auth_controller/auth_controllers.dart';
 import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
+import 'package:shopping_app/framework/repository/auth_repository/model/user_information_model.dart';
+import 'package:shopping_app/framework/repository/orderrepository/ui_order_filter.dart';
 import 'package:shopping_app/framework/utils/local_database_hive.dart';
 import 'package:shopping_app/ui/utils/theme/app_color.dart';
+import 'package:shopping_app/ui/utils/widgets/custom_Navigation.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_sizebox.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_snackar.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_text_widget.dart';
@@ -18,7 +21,8 @@ import '../helper/navigation_bar.dart';
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
   final ProductDetails product;
-  const ProductDetailsScreen({super.key, required this.product});
+  final isCheckStatus;
+  const ProductDetailsScreen({super.key, required this.isCheckStatus,required this.product});
 
   @override
   ConsumerState<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -79,9 +83,19 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     );
   }
 
+  List<OrderFilter> getStatusChangeDetails(ProductDetails productDetail){
+
+    if(productDetail.orderFilter == OrderFilter.Pending){
+      return [OrderFilter.Pending,OrderFilter.Shipped];
+    }else if(productDetail.orderFilter == OrderFilter.Shipped) {
+      return [OrderFilter.Shipped,OrderFilter.Delivered];
+    }
+    return [OrderFilter.Delivered];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final getCredential = ref.read(getUserCredential);
+    final getCredential = ref.watch(getUserCredential);
     return Scaffold(
       backgroundColor: AppColor.white,
       appBar: PreferredSize(
@@ -92,7 +106,8 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
           isShowTextField: false,
         ),
       ),
-      body: getCredential.when(data: (data){
+      body: getCredential.when(
+          data: (data){
         return SingleChildScrollView(
           padding: EdgeInsets.all(10.spMin),
           child: Column(
@@ -226,6 +241,30 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
               ),
               CustomSizeBox.height10,
 
+              if(widget.isCheckStatus)
+                (getStatusChangeDetails(widget.product).length==1) ?CustomButton(title: UiOrderFilter.Delivered.name, callback: (){}, color: Colors.amber,
+                  radius: MediaQuery.sizeOf(context).width * 0.6,
+                  size: Size(MediaQuery.sizeOf(context).width, 50.spMin),) :  CustomButton(title: "Change Status :  ${getStatusChangeDetails(widget.product)[0].name} -> ${getStatusChangeDetails(widget.product)[1].name}", callback: ()async{
+
+                    await LocalDatabaseHive.changeDeliveryStatus(getStatusChangeDetails(widget.product)[1], widget.product.productId, data.id);
+                    // ref.read(productListProvider.notifier).addData();
+                    CustomSnackBar.showMySnackBar(
+                        context,
+                        "Delivery Status Change",
+                        AppColor.errorColor
+                    );
+                    ref.read(productListProvider.notifier).getOrderList();
+
+                    CustomNavigation.orderScreenNavigation(context);
+                }, color: Colors.amber,
+                  radius: MediaQuery.sizeOf(context).width * 0.6,
+                  size: Size(MediaQuery.sizeOf(context).width, 50.spMin),),
+
+
+              if(!widget.isCheckStatus)
+                Column(
+                children: [
+
               CustomButton(
                 title: "Add to cart",
                 callback: () {
@@ -267,10 +306,15 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                 radius: MediaQuery.sizeOf(context).width * 0.6,
                 size: Size(MediaQuery.sizeOf(context).width, 50.spMin),
               ),
+
+
+                ],
+              )
             ],
           ),
         );
-      }, error: (obj,st){
+      },
+          error: (obj,st){
         return CustomTextWidget(text:"${st}" );
       }, loading: (){
         return Center(child: CircularProgressIndicator(),);

@@ -1,18 +1,20 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
 import 'package:shopping_app/ui/utils/theme/app_color.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_Navigation.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_text_widget.dart';
 
-class OrderConfermation extends StatefulWidget {
-  const OrderConfermation({super.key});
+class OrderConfirmation extends ConsumerStatefulWidget {
+  const OrderConfirmation({super.key});
 
   @override
-  State<OrderConfermation> createState() => _OrderConfermationState();
+  ConsumerState<OrderConfirmation> createState() => _OrderConfirmationState();
 }
 
-class _OrderConfermationState extends State<OrderConfermation> {
+class _OrderConfirmationState extends ConsumerState<OrderConfirmation> {
 
   @override
   void initState() {
@@ -20,7 +22,8 @@ class _OrderConfermationState extends State<OrderConfermation> {
     super.initState();
 
     Future.delayed(Duration(seconds: 3),(){
-      CustomNavigation.homeScreen(context);
+      ref.read(productListProvider.notifier).getOrderList();
+      CustomNavigation.orderScreenNavigation(context);
     });
   }
 

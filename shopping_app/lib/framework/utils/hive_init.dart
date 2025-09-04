@@ -2,6 +2,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../controller/auth_controller/database_location_info.dart';
 import '../repository/auth_repository/model/user_information_model.dart';
+
 class HiveInitialize{
 
 
@@ -15,6 +16,7 @@ class HiveInitialize{
     Hive.registerAdapter(UserAdapter());
     Hive.registerAdapter(UserInformationAdapter());
     Hive.registerAdapter(UserProductInformationAdapter());
+    Hive.registerAdapter(OrderFilterAdapter());
 
     // // Opening the box
     //   await Hive.openBox<User>(OPENBOXFORSTORESUERINFO);

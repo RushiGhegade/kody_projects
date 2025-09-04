@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shopping_app/framework/controller/auth_controller/auth_controllers.dart';
+import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
 import 'package:shopping_app/framework/utils/local_database_hive.dart';
 import 'package:shopping_app/framework/utils/local_database_sharedpreferance.dart';
 import 'package:shopping_app/ui/auth/helper/action_button.dart';
@@ -18,14 +20,14 @@ import 'package:shopping_app/ui/utils/widgets/custom_text_widget.dart';
 
 import '../../../utils/widgets/custom_snackar.dart';
 
-class LoginScreenMobile extends StatefulWidget {
+class LoginScreenMobile extends ConsumerStatefulWidget {
   const LoginScreenMobile({super.key});
 
   @override
-  State<LoginScreenMobile> createState() => _LoginScreenMobileState();
+  ConsumerState<LoginScreenMobile> createState() => _LoginScreenMobileState();
 }
 
-class _LoginScreenMobileState extends State<LoginScreenMobile> {
+class _LoginScreenMobileState extends ConsumerState<LoginScreenMobile> {
 
    TextEditingController userNameTextEditingController = TextEditingController();
    TextEditingController passwordTextEditingController = TextEditingController();
@@ -94,8 +96,11 @@ class _LoginScreenMobileState extends State<LoginScreenMobile> {
                       userNameTextEditingController.text,
                       passwordTextEditingController.text);
 
-                  if (str=="valid") {
+                  if (str=="valid"){
                     LocalDataBaseSharedPref.storeLoginInfo(true);
+
+                    await LocalDatabaseHive.getFirstTimeData(userNameTextEditingController.text);
+                    ref.read(productListProvider.notifier).addData();
                     CustomSnackBar.showMySnackBar(
                         context, "Login Successfully", AppColor.successColor);
                     CustomNavigation.homeScreen(context);
@@ -125,8 +130,8 @@ class _LoginScreenMobileState extends State<LoginScreenMobile> {
               secondName: "Guest",
               callback: () {
                 print("Gest Login");
+                ref.read(productListProvider.notifier).fetchFilterList();
                 CustomNavigation.homeScreen(context);
-
               },
             ),
             Spacer(flex: 5),

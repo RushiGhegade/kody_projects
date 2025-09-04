@@ -33,8 +33,14 @@ class UserProductInformation{
 
   @HiveField(3)
   int quantity;
+
+  @HiveField(4)
+  int? orderQuality;
+
+  @HiveField(5)
+  OrderFilter? orderFilter;
   
-  UserProductInformation({required this.productId,required this.isCart,required this.order,required this.quantity});
+  UserProductInformation({required this.productId,this.orderFilter = OrderFilter.Pending,this.orderQuality=1,required this.isCart,required this.order,required this.quantity});
 }
 
 @HiveType(typeId: 2)
@@ -55,5 +61,14 @@ class UserInformation{
 
 
 
+@HiveType(typeId: 3)
+enum OrderFilter{
+  @HiveField(0)
+  Pending,
+  @HiveField(1)
+  Shipped,
+  @HiveField(2)
+  Delivered
+}
 
 

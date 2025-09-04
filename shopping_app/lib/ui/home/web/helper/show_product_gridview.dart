@@ -37,7 +37,7 @@ class _ShowProductGridviewState extends ConsumerState<ShowProductGridview> {
             ProductDetails productDetails = getData.filterProduct[index];
         return GestureDetector(
           onTap: (){
-            CustomNavigation.productDetailScreenNavigation(context,productDetails);
+            CustomNavigation.productDetailScreenNavigation(context,false,productDetails);
           },
           child: Container(
             padding: EdgeInsets.all(7.r),

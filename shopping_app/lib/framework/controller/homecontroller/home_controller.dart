@@ -2,6 +2,7 @@
 //
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/framework/repository/homerepository/model/productmodel.dart';
+import 'package:shopping_app/framework/repository/orderrepository/ui_order_filter.dart';
 
 import '../../repository/homerepository/enums/categories.dart';
 
@@ -11,6 +12,69 @@ final productListProvider = StateNotifierProvider<Product,StoreProduct>((ref){
 
 class Product extends StateNotifier<StoreProduct>{
   Product() : super(StoreProduct(allProducts: [], filterProduct: []));
+
+
+  void addFilterOrder(UiOrderFilter orderFilter){
+
+    if(orderFilter.name==UiOrderFilter.All.name){
+      getOrderList();
+    }else{
+
+      state = state.copyWith(filterProduct:[ ...state.allProducts.where((ele) {
+        return ele.orderFilter.name==orderFilter.name;
+      } )]);
+    }
+
+  }
+
+  void searchFilter(String search){
+
+    if(search.isEmpty){
+      state = state.copyWith(filterProduct: [...state.allProducts]);
+    }else{
+      state = state.copyWith(
+        filterProduct:  [
+          ...state.allProducts.where( (ele) => ele.productName.toLowerCase().contains(search.toLowerCase()) )
+        ]
+      );
+    }
+
+  }
+  
+  // void add homeScreen Filter
+  void addFilter(List<Categories> filter){
+
+    if(filter.contains(Categories.all)){
+      state = state.copyWith(filterProduct: [...state.allProducts]);
+    }else{
+      state = state.copyWith(filterProduct: [ ...state.allProducts.where((ele) => filter.contains(ele.category))]);
+    }
+
+
+  }
+
+
+  void addPriceFilter(List<Categories> category,double price,bool isAbove){
+
+    addFilter(category);
+
+    state =  state.copyWith(
+      filterProduct: [
+        ...state.filterProduct.where(
+            (ele){
+              if(isAbove){
+                return ele.productPrice>=price;
+              }else{
+                return ele.productPrice<=price;
+              }
+            }
+        )
+      ]
+    );
+
+
+  }
+
 
   // fetch the filtered list
   void fetchFilterList(){
@@ -35,6 +99,19 @@ class Product extends StateNotifier<StoreProduct>{
 
   }
 
+
+  // get add to cart List
+  void getOrderList(){
+
+    addData();
+
+    state = state.copyWith(filterProduct:[ ...state.allProducts.where((ele) {
+
+      return ele.isOrder;
+    } ).toList()]);
+
+  }
+
   // add product to add to cart
   void addProductTOCart(String proId,ProductDetails product1){
 
@@ -50,8 +127,6 @@ class Product extends StateNotifier<StoreProduct>{
   }
 
   void fetchFirstTimeData(String userId){
-
-
 
   }
 

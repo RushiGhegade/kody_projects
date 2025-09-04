@@ -4,6 +4,8 @@ import 'package:shopping_app/framework/repository/homerepository/model/productmo
 import 'package:shopping_app/ui/cart/checkout_screen.dart';
 import 'package:shopping_app/ui/cart/order_confermation.dart';
 import 'package:shopping_app/ui/home/mobile/screens/productdetailedscreen.dart';
+import 'package:shopping_app/ui/order/order_screen.dart';
+import 'package:shopping_app/ui/profile/profile_screen.dart';
 
 import '../../auth/mobile/screens/createaccount_screen_mobile.dart';
 import '../../cart/cart_screen.dart';
@@ -47,24 +49,40 @@ class CustomNavigation{
   }
 
   // Product Detailed Screen
-  static void productDetailScreenNavigation(BuildContext context,ProductDetails product){
+  static void productDetailScreenNavigation(BuildContext context,bool isCheckStatus,ProductDetails product){
     Navigator.push(context, MaterialPageRoute(builder: (context){
-      return CheckScreenLayout(mobile: ProductDetailsScreen(product: product), web: ProductDetailsScreen(product: product)).getLayout();
+      return CheckScreenLayout(mobile: ProductDetailsScreen(product: product,isCheckStatus: isCheckStatus,), web: ProductDetailsScreen(product: product,isCheckStatus: isCheckStatus)).getLayout();
     }));
   }
 
   // Confirmation screen
   static void confirmationScreenNavigation(BuildContext context){
     Navigator.push(context, MaterialPageRoute(builder: (context){
-      return CheckScreenLayout(mobile: OrderConfermation(), web: OrderConfermation()).getLayout();
+      return CheckScreenLayout(mobile: OrderConfirmation(), web: OrderConfirmation()).getLayout();
     }));
   }
 
+
+  // Order Screen Navigation
+  static void orderScreenNavigation(BuildContext context){
+    Navigator.push(context, MaterialPageRoute(builder: (context){
+      return CheckScreenLayout(mobile: OrderScreen(), web: OrderScreen()).getLayout();
+    }));
+  }
 
   // Product Detailed Screen
   static void cartScreenNavigation(BuildContext context){
     Navigator.push(context, MaterialPageRoute(builder: (context){
       return CheckScreenLayout(mobile: AddToCart(), web: AddToCart()).getLayout();
+    }));
+  }
+
+
+  // Profile  Screen
+  static void profileScreenNavigation(BuildContext context){
+
+    Navigator.push(context, MaterialPageRoute(builder: (context){
+      return CheckScreenLayout(mobile: ProfileScreen(), web: ProfileScreen()).getLayout();
     }));
   }
 }

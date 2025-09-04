@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/framework/controller/auth_controller/auth_controllers.dart';
+import 'package:shopping_app/ui/profile/gest_user_login_profile.dart';
+import 'package:shopping_app/ui/profile/login_user_profile.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_text_widget.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -17,15 +19,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     final islogin = ref.watch(getUserCredential);
 
-    return Padding(padding: EdgeInsets.all(10),
-    child:   islogin.when(
+    return islogin.when(
         data:(data){
           if(data.isLogin){
 
-
+              return  LoginUserProfile(id: data.id);
 
           }else{
-
+              return GestUserLoginProfile();
           }
         } ,
         error: (obj,st){
@@ -34,7 +35,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         loading: (){
           return Center(child: CircularProgressIndicator());
         }
-    ),
     );
   }
 }

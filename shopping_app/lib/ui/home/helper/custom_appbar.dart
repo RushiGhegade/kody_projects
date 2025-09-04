@@ -56,7 +56,6 @@ final String title;
           GestureDetector(
               onTap: ()async{
                 ref.read(productListProvider.notifier).getAddToCartList();
-
                 CustomNavigation.cartScreenNavigation(context);
               },
               child: CustomIcon(iconData: Icons.card_travel,size: 26.spMin,)),

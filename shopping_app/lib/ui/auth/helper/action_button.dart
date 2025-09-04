@@ -26,7 +26,7 @@ class ActionButton extends StatelessWidget {
         ),
         backgroundColor: AppColor.secondaryColor,
       ),
-      child: CustomTextWidget(text: text,fontSize: 17.spMin,),
+      child: CustomTextWidget(text: text,fontSize: 17.spMin,color: AppColor.textColor,),
     );
   }
 }
