@@ -1,10 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shopping_app/ui/home/web/helper/show_product_gridview.dart';
 import 'package:shopping_app/ui/home/web/helper/showdrawer.dart';
-import 'package:shopping_app/ui/utils/theme/app_color.dart';
-import 'package:shopping_app/ui/utils/widgets/custom_sizebox.dart';
 
 import '../../helper/custom_appbar.dart';
 

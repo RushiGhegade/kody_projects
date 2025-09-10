@@ -1,7 +1,8 @@
 
-import '../../auth_repository/model/user_information_model.dart';
+import '../../auth_repository/model/user_info_model.dart';
 import '../enums/categories.dart';
 
+// it is store the product information
 class ProductDetails{
   final productId;
   int  quantity;

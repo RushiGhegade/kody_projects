@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/framework/controller/auth_controller/auth_controllers.dart';
 import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
 import 'package:shopping_app/framework/controller/homecontroller/select_category.dart';
+import 'package:shopping_app/framework/repository/orderrepository/ui_order_filter.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_Navigation.dart';
 
-import '../../../../framework/utils/local_database_hive.dart';
+import '../../../../framework/controller/ordercontroller/select_filter_controller.dart';
 import '../../../utils/theme/app_color.dart';
 import '../../../utils/widgets/custom_Icon.dart';
 import '../../../utils/widgets/custom_text_widget.dart';
@@ -24,6 +25,8 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
   Widget build(BuildContext context) {
     int selectedIndex = ref.watch(selectedIndexProvider);
     final getcredentail = ref.watch(getUserCredential);
+  
+
     return getcredentail.when(data: (data){
       return BottomNavigationBar(
         elevation: 10,
@@ -39,14 +42,12 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
             ref.read(productListProvider.notifier).fetchFilterList();
             CustomNavigation.homeScreen(context);
           }else if(index==1){
-            // LocalDatabaseHive.clearCartAndOrder((val.value)!.id);
-            if(data.isLogin){
-              ref.read(productListProvider.notifier).getOrderList();
-              CustomNavigation.orderScreenNavigation(context);
-            }else{
-              CustomNavigation.loginScreen(context);
+            ref.read(selectUiFilterProvider.notifier).state = UiOrderFilter.All;
 
-            }
+            ref
+                                .read(productListProvider.notifier)
+                                .addFilterOrder(UiOrderFilter.All);
+           CustomNavigation.orderScreenNavigation(context);
 
             // CustomNavigation.
           }else{
@@ -60,7 +61,7 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
         ],
       );
     },  error: (obj,st){
-      return CustomTextWidget(text:"${st}" );
+      return CustomTextWidget(text:"$st" );
     }, loading: (){
       return Center(child: CircularProgressIndicator(),);
     });
@@ -71,7 +72,7 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
         padding: EdgeInsets.symmetric(vertical: 5,horizontal: 5),
         decoration: BoxDecoration(
             border: Border(
-                top: BorderSide(color: Colors.purple,width: 4)
+                top: BorderSide(color: Colors.black,width: 4)
             )
         ),
         child: CustomIcon(iconData: icon1,color:AppColor.secondaryColor)):Container(padding: EdgeInsets.symmetric(vertical: 5,horizontal: 5),child: CustomIcon(iconData: icon,color: AppColor.black));

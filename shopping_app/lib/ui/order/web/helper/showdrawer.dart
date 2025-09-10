@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shopping_app/framework/controller/homecontroller/select_category.dart';
 import 'package:shopping_app/ui/utils/theme/app_color.dart';
-import 'package:shopping_app/ui/utils/widgets/custom_sizebox.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_text_widget.dart';
 
 import '../../../utils/widgets/custom_Icon.dart';
@@ -15,6 +14,7 @@ class MyDrawer extends ConsumerStatefulWidget {
   ConsumerState<MyDrawer> createState() => _MyDrawerState();
 }
 
+// these is for navigation on web
 class _MyDrawerState extends ConsumerState<MyDrawer> {
   // List<String> drawerText = ["Orders", "Wishlist", "Settings"];
 

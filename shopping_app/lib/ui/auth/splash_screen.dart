@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/framework/controller/auth_controller/auth_controllers.dart';
+import 'package:shopping_app/framework/controller/auth_controller/check_login_status.dart';
 
 import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
 import 'package:shopping_app/framework/utils/local_database_hive.dart';
@@ -30,11 +31,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       Future.delayed(Duration(seconds: 3),()async{
 
         if(await LocalDataBaseSharedPref.isUserLogin()){
+          ref.read(checkLoginStatus.notifier).state = true;
           print("Login");
          await LocalDatabaseHive.getFirstTimeData(credential.id);
           ref.read(productListProvider.notifier).addData();
           CustomNavigation.homeScreen(context);
         }else{
+          ref.read(checkLoginStatus.notifier).state = false;
           print("Not Login");
           CustomNavigation.loginScreen(context);
           // CustomNavigation.homeScreen(context);

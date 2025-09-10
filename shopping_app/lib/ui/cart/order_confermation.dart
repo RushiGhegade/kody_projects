@@ -7,6 +7,10 @@ import 'package:shopping_app/ui/utils/theme/app_color.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_Navigation.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_text_widget.dart';
 
+import '../../framework/controller/ordercontroller/select_filter_controller.dart';
+import '../../framework/repository/orderrepository/ui_order_filter.dart';
+
+/// these is order cofirmation screen when order get these screen show
 class OrderConfirmation extends ConsumerStatefulWidget {
   const OrderConfirmation({super.key});
 
@@ -23,6 +27,7 @@ class _OrderConfirmationState extends ConsumerState<OrderConfirmation> {
 
     Future.delayed(Duration(seconds: 3),(){
       ref.read(productListProvider.notifier).getOrderList();
+      ref.read(selectUiFilterProvider.notifier).state = UiOrderFilter.All;
       CustomNavigation.orderScreenNavigation(context);
     });
   }

@@ -11,6 +11,8 @@ import '../../../utils/theme/app_color.dart';
 import '../../../utils/widgets/custom_Icon.dart';
 import '../../../utils/widgets/custom_text_widget.dart';
 
+
+// these screen shoe the grid on web home screen
 class ShowProductGridview extends ConsumerStatefulWidget{
   const ShowProductGridview({super.key});
 

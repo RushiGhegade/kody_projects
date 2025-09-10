@@ -1,15 +1,14 @@
 
-import 'package:shopping_app/framework/controller/auth_controller/database_location_info.dart';
-import 'package:shopping_app/framework/repository/auth_repository/model/user_information_model.dart';
+import 'package:shopping_app/framework/repository/auth_repository/model/user_info_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:shopping_app/framework/repository/homerepository/model/productmodel.dart';
-import 'package:shopping_app/framework/repository/orderrepository/ui_order_filter.dart';
 
 import 'package:shopping_app/framework/utils/hive_init.dart';
 
 import '../controller/homecontroller/home_controller.dart';
 
+import 'dart:typed_data';
 
+// these class manage the hive all operation
 class LocalDatabaseHive{
 
   // Store the data in hive
@@ -19,6 +18,7 @@ class LocalDatabaseHive{
   }
 
 
+  // it fetch the user profile data
   static Future<UserInformation> getUserProfileData(String userId)async{
 
     Box<User>  box =await  HiveInitialize.getBox();
@@ -31,7 +31,7 @@ class LocalDatabaseHive{
 
   }
 
-  // clear the boc
+  // clear the box
   void clearBox()async{
     Box<User>  box =await  HiveInitialize.getBox();
     box.clear();
@@ -63,7 +63,7 @@ class LocalDatabaseHive{
       print("add to cart 1");
       UserProductInformation userProductInformation1 = UserProductInformation(productId: proId,orderQuality: 1, isCart: flag, order: false, quantity: 1);
       user.userProductInformation.add(userProductInformation1);
-      box.put(id,user);
+     await box.put(id,user);
     }else{
 
       bool present = false;
@@ -79,15 +79,16 @@ class LocalDatabaseHive{
         print("add to cart 2");
         UserProductInformation userProductInformation1 = UserProductInformation(productId: proId, orderQuality: 1,isCart: flag, order: false, quantity: 1);
         user.userProductInformation.add(userProductInformation1);
-        box.put(id,user);
+        await box.put(id,user);
       }else{
         print("add to cart 3");
         user.userProductInformation = userProductInformation;
-        box.put(id, user);
+        await box.put(id, user);
       }
     }
   }
 
+  // these function  get user id
   static UserProductInformation? findId(List<UserProductInformation> prod,String id){
 
     for(int i=0;i<prod.length;i++){
@@ -102,6 +103,7 @@ class LocalDatabaseHive{
 
   }
 
+  // these fuction chnage the delivary status
   static Future<void> changeDeliveryStatus(OrderFilter orderFilter,String proId,String id)async{
     Box<User>  box =await  HiveInitialize.getBox();
     User user = box.get(id)!;
@@ -115,15 +117,17 @@ class LocalDatabaseHive{
       }
     }
     user.userProductInformation = [...userProInfo];
-    box.put(id, user);
+    await box.put(id, user);
     await getFirstTimeData(id);
   }
 
 
+
+  // when user come these fetch the first time data
   static Future<void> getFirstTimeData(String id)async{
     Box<User>  box = await  HiveInitialize.getBox();
     User user =  box.get(id)!;
-    print("${id} ${user.userProductInformation[0].order} ${user.userProductInformation[0].isCart}");
+    // print("${id} ${user.userProductInformation[0].order} ${user.userProductInformation[0].isCart}");
     List<UserProductInformation> productsData = [...user.userProductInformation];
     print(productsData);
     print(productsData.length);
@@ -140,6 +144,18 @@ class LocalDatabaseHive{
 
   }
 
+  // these function change the image in hive
+  static Future<void> changeImage(String id, Uint8List image)async{
+    Box<User>  box = await  HiveInitialize.getBox();
+    User user =  box.get(id)!;
+
+    user.userInformation.uint8list = image;
+
+    await box.put(id, user);
+
+  }
+
+  // after check out these fuction call to clear the cart
   static Future<void> clearCartAndOrder(String id)async{
     Box<User>  box = await  HiveInitialize.getBox();
     User user =  box.get(id)!;
@@ -150,16 +166,17 @@ class LocalDatabaseHive{
       userInfo[i].isCart = false;
       userInfo[i].orderQuality = userInfo[i].quantity;
       userInfo[i].quantity = 1;
-      userInfo[i].orderFilter = OrderFilter.Pending;
+      userInfo[i].orderFilter =  userInfo[i].orderFilter;
       userInfo[i].order = true;
     }
 
     user.userProductInformation = [...userInfo];
     print("Clear cart");
-    box.put(id, user);
+    await box.put(id, user);
     await getFirstTimeData(id);
   }
 
+  // htese function uodate the quantity of the product
   static void updateDataQuantity(String id,String proId,int quantity)async{
     Box<User>  box =await  HiveInitialize.getBox();
 
@@ -170,7 +187,7 @@ class LocalDatabaseHive{
     if(userProductInformation.isEmpty){
       UserProductInformation userProductInformation1 = UserProductInformation(productId: proId,orderQuality: 1, isCart: true, order: false, quantity: quantity);
       user.userProductInformation.add(userProductInformation1);
-      box.put(id,user);
+      await box.put(id,user);
       print("Quantity update 1");
     }else{
       bool present = false;
@@ -185,11 +202,11 @@ class LocalDatabaseHive{
       if(!present){
         UserProductInformation userProductInformation1 = UserProductInformation(productId: proId, orderQuality: 1, isCart: true, order: false, quantity: quantity);
         user.userProductInformation.add(userProductInformation1);
-        box.put(id,user);
+        await box.put(id,user);
         print("Quantity update 2");
       }else{
         user.userProductInformation = userProductInformation;
-        box.put(id, user);
+        await box.put(id, user);
         print("Quantity update 3");
       }
     }

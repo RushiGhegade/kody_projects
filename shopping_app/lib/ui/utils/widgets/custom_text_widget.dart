@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+
+/// custom text widget
 class CustomTextWidget extends StatelessWidget {
 
   final String text;

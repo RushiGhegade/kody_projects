@@ -8,6 +8,7 @@ import 'package:shopping_app/ui/utils/theme/app_color.dart';
 import '../../../framework/controller/app_controller/app_controller.dart';
 import '../../utils/widgets/custom_Icon.dart';
 
+// it show search text filed in app bar
 class SearchTextField extends ConsumerStatefulWidget {
   const SearchTextField({super.key});
 

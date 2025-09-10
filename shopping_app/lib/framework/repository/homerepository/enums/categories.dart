@@ -1,4 +1,4 @@
-
+// store the all category filter
 enum Categories{
   all,
   watch,

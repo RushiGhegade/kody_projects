@@ -11,6 +11,8 @@ import '../../utils/widgets/custom_Icon.dart';
 import 'custom_search.dart';
 
 
+
+/// these is percistant app bar it shoe all screen
 class CustomAppbar extends ConsumerWidget {
 
 

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_app/ui/utils/theme/app_color.dart';
 
+// her store the aoo them
 class AppTheme{
 
    static ThemeData AppThemeLight() {

@@ -30,7 +30,7 @@ class _PriceShowState extends ConsumerState<PriceShow> {
         return GestureDetector(
           onTap: () {
             price = prices[index];
-            ref.read(productListProvider.notifier).addPriceFilter(getFilters, price, price==100000);
+            ref.read(productListProvider.notifier).addPriceFilter(getFilters.filterList, price, price==100000);
             setState(() {});
           },
           child: Container(
@@ -60,7 +60,7 @@ class _PriceShowState extends ConsumerState<PriceShow> {
                     onTap: () {
                       price = 0;
                       // findList();
-                      ref.read(productListProvider.notifier).addFilter(getFilters);
+                      ref.read(productListProvider.notifier).addFilter(getFilters.filterList);
                       setState(() {});
                     },
                     child: CustomIcon(

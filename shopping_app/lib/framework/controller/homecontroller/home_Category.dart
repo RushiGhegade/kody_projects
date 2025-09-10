@@ -1,42 +1,50 @@
-
-import 'package:riverpod/riverpod.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/framework/repository/homerepository/enums/categories.dart';
 
 
-final homeSelectCategoryProvider = StateNotifierProvider<MyFilter,List<Categories>>((ref){
 
+/// these provider manage the all filter in the homescreen thet we selected
+final homeSelectCategoryProvider = ChangeNotifierProvider<MyFilter>((ref){
   return MyFilter();
-
 });
 
 
-class MyFilter extends StateNotifier<List<Categories>>{
+class MyFilter extends ChangeNotifier{
 
-  MyFilter():super([]);
+   List<Categories> filterList = [Categories.all];
 
-  void clearCategory(){
-    state = [Categories.all];
-  }
-
-  void removeAll(){
-    state.removeWhere( (ele) => ele == Categories.all );
-
+  // these function clear the filter
+  void clearCategory() {
+    filterList = [Categories.all];
+    notifyListeners();
   }
 
 
-  void addCategory(Categories categories){
+  // these function remove the all filter
+  void removeAll() {
+    filterList.removeWhere((ele) => ele == Categories.all);
+    notifyListeners();
+  }
 
+
+  // these function add the filter
+  void addCategory(Categories categories) {
     removeAll();
-    if(!state.contains(categories)){
-      state = [...state,categories];
+
+    if(!filterList.contains(categories)){
+      filterList = [...filterList,categories];
+      print("--------------  $filterList ");
     }
 
+    notifyListeners();
   }
 
-  void removeCategory(Categories categories){
-    state.removeWhere( (ele) => ele.name==categories.name );
-    state = [...state];
+  // these function remove the specific filter
+  void removeCategory(Categories categories) {
+    filterList.removeWhere((ele) => ele.name == categories.name);
+    filterList = [...filterList];
+    notifyListeners();
   }
 
 }
-

@@ -1,38 +1,28 @@
 
-
-import 'package:flutter/cupertino.dart';
 import 'package:riverpod/riverpod.dart';
 
 import '../../utils/local_database_sharedpreferance.dart';
 
+// these provider help you to get current user Credential from shared preferance
+final getUserCredential = FutureProvider<Credential>((ref) async {
 
-final getUserCredential = FutureProvider<Credential>((ref)async{
+  return await LocalDataBaseSharedPref.getCredential();
 
-  bool isLogin = (await LocalDataBaseSharedPref.getCredential()).isLogin;
-  String id =  (await LocalDataBaseSharedPref.getCredential()).id;
-
-  return Credential(isLogin: isLogin, id: id);
 });
 
-class Credential{
+
+// Credential class store user credential
+class Credential {
+
   final bool isLogin;
   final String id;
 
-  Credential({required this.isLogin,required this.id});
+  Credential({required this.isLogin, required this.id});
 
-  Credential copyWith({bool? isLogin,String? id}){
-    return Credential(isLogin: isLogin??this.isLogin, id: id??this.id);
+  Credential copyWith({bool? isLogin, String? id}) {
+
+    return Credential(isLogin: isLogin ?? this.isLogin, id: id ?? this.id);
+
   }
-}
-
-
-class AuthControllers{
-
-
-static final formKey = GlobalKey<FormState>();
-static final formKeyCreateAccountMobile = GlobalKey<FormState>();
-static final formKeyLoginWeb = GlobalKey<FormState>();
-static final formKeyCreateAccountWeb = GlobalKey<FormState>();
-
 
 }

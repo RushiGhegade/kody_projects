@@ -59,9 +59,10 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
   @override
   Widget build(BuildContext context) {
 
-    final selectFilterCategory = ref.watch(homeSelectCategoryProvider);
+    MyFilter selectFilterCategory = ref.watch(homeSelectCategoryProvider);
 
     final getProduct = ref.watch(productListProvider);
+
     return Scaffold(
       appBar:  PreferredSize(
           preferredSize: Size.fromHeight(130),
@@ -71,7 +72,6 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-
 
             Row(
               children: [
@@ -83,7 +83,7 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     margin: EdgeInsets.only(top: 10, bottom: 5, left: 10),
                     decoration: BoxDecoration(
-                      color: (!selectFilterCategory.contains(Categories.all))
+                      color: (!selectFilterCategory.filterList.contains(Categories.all))
                           ? AppColor.primaryColor.withOpacity(0.5)
                           : null,
                       borderRadius: BorderRadius.circular(12),
@@ -96,8 +96,8 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
                       children: [
                         CustomTextWidget(
                           text:
-                          "Categories ${(!selectFilterCategory.contains( Categories.all)) ? selectFilterCategory.length : ''}",
-                          fontSize: 13.5,
+                          "Categories ${(!selectFilterCategory.filterList.contains( Categories.all)) ? selectFilterCategory.filterList.length : ''}",
+                          fontSize: 13.5.spMin,
                           color:AppColor.black,
                         ),
                         CustomIcon(
@@ -109,18 +109,13 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
                   ),
                 ),
 
-
-                
                 SizedBox(
                   height: 50,
-                  width: MediaQuery.sizeOf(context).width*0.54,
+                  width: MediaQuery.sizeOf(context).width - 160,
                   child:PriceShow()
                 ),
               ],
             ),
-
-
-
 
             Expanded(
               child: (getProduct.filterProduct.isEmpty)? Expanded(child: Center(child: CustomTextWidget(text: "No Item Found"),)) : ListView.builder(
@@ -156,12 +151,12 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
                                 // height: 100,width: 100,
                                 child: Image.network(productDetails.productImage[0],fit: BoxFit.cover,)),
                           ),
-                          title: CustomTextWidget(text: productDetails.productName,fontWeight: FontWeight.w600,),
+                          title: CustomTextWidget(text: productDetails.productName,fontWeight: FontWeight.w600,fontSize: 16.spMin,),
                           subtitle:Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             spacing: 5.spMin,
                             children: [
-                              CustomTextWidget(text: productDetails.productDis ?? "",maxLines: 1,color: AppColor.textColor.withOpacity(0.6),),
+                              CustomTextWidget(text: productDetails.productDis ?? "",maxLines: 1,fontSize: 14.5.spMin,color: AppColor.textColor.withOpacity(0.6),),
                               Row(
                                 children: [
                                   CustomIcon(

@@ -1,7 +1,10 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shopping_app/framework/controller/auth_controller/check_login_status.dart';
+import 'package:shopping_app/framework/controller/homecontroller/home_controller.dart';
 
+import '../../../../framework/controller/app_controller/app_controller.dart';
 import '../../../../framework/controller/auth_controller/auth_controllers.dart';
 import '../../../../framework/utils/local_database_hive.dart';
 import '../../../../framework/utils/local_database_sharedpreferance.dart';
@@ -14,18 +17,16 @@ import '../../helper/action_button.dart';
 import '../../helper/enter_text.dart';
 import '../../helper/rich_text.dart';
 
-class LoginScreenWeb extends StatefulWidget {
+class LoginScreenWeb extends ConsumerStatefulWidget {
   const LoginScreenWeb({super.key});
 
   @override
-  State<LoginScreenWeb> createState() => _LoginScreenWebState();
+  ConsumerState<LoginScreenWeb> createState() => _LoginScreenWebState();
 }
 
-class _LoginScreenWebState extends State<LoginScreenWeb> {
+class _LoginScreenWebState extends ConsumerState<LoginScreenWeb> {
   TextEditingController userNameTextEditingController = TextEditingController();
   TextEditingController passwordTextEditingController = TextEditingController();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,6 @@ class _LoginScreenWebState extends State<LoginScreenWeb> {
           children: [
             Spacer(flex: 10),
             CustomTextWidget(
-
               text: "Login",
               fontSize: 25.spMin,
               fontWeight: FontWeight.bold,
@@ -45,10 +45,11 @@ class _LoginScreenWebState extends State<LoginScreenWeb> {
             Spacer(flex: 7),
 
             Form(
-              key: AuthControllers.formKeyLoginWeb,
+              key: AppController.formKeyLoginWeb,
               child: Column(
                 children: [
-                  EnterTextField(iconData: Icons.person,
+                  EnterTextField(
+                    iconData: Icons.person,
                     isPassword: false,
                     text: "Enter the Email",
                     controller: userNameTextEditingController,
@@ -58,14 +59,17 @@ class _LoginScreenWebState extends State<LoginScreenWeb> {
                       }
 
                       final emailRegex = RegExp(
-                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      );
                       if (!emailRegex.hasMatch(v)) {
                         return 'Please enter a valid email address';
                       }
                       return null;
-                    },),
+                    },
+                  ),
                   CustomSizeBox.height20,
-                  EnterTextField(iconData: Icons.lock,
+                  EnterTextField(
+                    iconData: Icons.lock,
                     text: "Enter the Password",
                     isPassword: true,
                     controller: passwordTextEditingController,
@@ -76,31 +80,54 @@ class _LoginScreenWebState extends State<LoginScreenWeb> {
                         return "password length grater then 6";
                       }
 
-
                       return null;
-                    },),
+                    },
+                  ),
                 ],
               ),
             ),
-
 
             Spacer(flex: 5),
             ActionButton(
               text: "Login",
               callback: () async {
-                if (AuthControllers.formKeyLoginWeb.currentState!.validate()) {
+                if (AppController.formKeyLoginWeb.currentState!.validate()) {
                   String str = await LocalDatabaseHive.isUserPresent(
-                      userNameTextEditingController.text,
-                      passwordTextEditingController.text);
+                    userNameTextEditingController.text,
+                    passwordTextEditingController.text,
+                  );
 
-                  if (str=="valid") {
-                    LocalDataBaseSharedPref.storeLoginInfo(true);
+                  if (str == "valid") {
+                    await LocalDataBaseSharedPref.storeLoginInfo(true,userNameTextEditingController.text);
+                    // awLocalDataBaseSharedPref.storeCurrentUserLoginId(userNameTextEditingController.text);
+                    print("user id : ${userNameTextEditingController.text}");
+
+                    products = [...copyList];
+
+                    await LocalDatabaseHive.getFirstTimeData(
+                      userNameTextEditingController.text,
+                    );
+
+                    final get =  ref.invalidate(getUserCredential);
+
+
+                    ref.read(productListProvider.notifier).addData();
+                    ref.read(checkLoginStatus.notifier).state = true;
+
                     CustomSnackBar.showMySnackBar(
-                        context, "Login Successfully", AppColor.successColor);
+                      context,
+                      "Login Successfully",
+                      AppColor.successColor,
+                    );
+
                     CustomNavigation.homeScreen(context);
                   } else {
+                    ref.read(checkLoginStatus.notifier).state = false;
                     CustomSnackBar.showMySnackBar(
-                        context, str, AppColor.errorColor);
+                      context,
+                      str,
+                      AppColor.errorColor,
+                    );
                   }
                 }
               },
@@ -122,7 +149,11 @@ class _LoginScreenWebState extends State<LoginScreenWeb> {
               firstName: "Continue As  ",
               secondName: "Guest",
               callback: () {
+                products = [...copyList];
                 print("Gest Login");
+                ref.read(checkLoginStatus.notifier).state = false;
+
+                ref.read(productListProvider.notifier).addData();
                 CustomNavigation.homeScreen(context);
               },
             ),

@@ -24,7 +24,7 @@ class _MyBottomSheetContentState extends ConsumerState<MyBottomSheetContent> {
   @override
   Widget build(BuildContext context) {
     
-    final mySelectCategory = ref.watch(homeSelectCategoryProvider);
+    MyFilter mySelectCategory = ref.watch(homeSelectCategoryProvider);
     
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -86,7 +86,7 @@ class _MyBottomSheetContentState extends ConsumerState<MyBottomSheetContent> {
                               text: ele.name,
                               color:AppColor.black,
                             ),
-                            if (ele.name != 'all' && mySelectCategory.contains(ele))
+                            if (ele.name != 'all' && mySelectCategory.filterList.contains(ele))
                               GestureDetector(
                                 onTap: () {
                                   print("object");
@@ -110,7 +110,7 @@ class _MyBottomSheetContentState extends ConsumerState<MyBottomSheetContent> {
               Row(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (!mySelectCategory.contains(Categories.all))
+                  if (!mySelectCategory.filterList.contains(Categories.all))
                     CustomButton(
                       title: "Clear Filter",
                       callback: () {
@@ -124,12 +124,12 @@ class _MyBottomSheetContentState extends ConsumerState<MyBottomSheetContent> {
                     ),
                   Spacer(),
                   CustomButton(
-                    title: (mySelectCategory.contains(Categories.all))
+                    title: (mySelectCategory.filterList.contains(Categories.all))
                         ? "Show Products"
                         : "Apply Filter",
                     callback: () {
 
-                      ref.read(productListProvider.notifier).addFilter(mySelectCategory);
+                      ref.read(productListProvider.notifier).addFilter(mySelectCategory.filterList);
                       Navigator.pop(context);
                     },
                     color: AppColor.secondaryColor,

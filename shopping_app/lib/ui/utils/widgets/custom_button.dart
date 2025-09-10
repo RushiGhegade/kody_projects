@@ -1,8 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shopping_app/ui/utils/theme/app_color.dart';
 import 'package:shopping_app/ui/utils/widgets/custom_text_widget.dart';
 
+/// these is for custom button it give on press to the user
 class CustomButton extends StatelessWidget {
   final String title;
   final VoidCallback callback;
@@ -35,7 +37,7 @@ class CustomButton extends StatelessWidget {
         ),
         fixedSize: size,
       ),
-      child: CustomTextWidget(text: title,color: textColor,),
+      child: CustomTextWidget(text: title,color: textColor,fontSize: 16.spMin,fontWeight: FontWeight.w500),
     );
   }
 }
