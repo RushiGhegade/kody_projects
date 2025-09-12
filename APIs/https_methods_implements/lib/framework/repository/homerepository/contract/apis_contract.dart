@@ -1,5 +1,6 @@
 
 import 'package:http/http.dart'  as http;
+import 'package:https_methods_implements/framework/repository/homerepository/module/fetchdata_model.dart';
 
 abstract class Api{
 
@@ -13,7 +14,7 @@ abstract class Api{
   void getSingleObjectById(int id);
 
   // make these Method for add data on server
-  Future<http.Response> postData();
+  Future<http.Response> postData(FetchData fetchData);
 
   // make these method for change the single entity
   void patchData();

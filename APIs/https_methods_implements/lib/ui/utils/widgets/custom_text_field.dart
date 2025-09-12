@@ -7,7 +7,13 @@ import 'package:https_methods_implements/framework/controller/homecontroller/hom
 import 'package:https_methods_implements/ui/utils/theme/app_color.dart';
 
 class CustomTextField extends ConsumerStatefulWidget {
-  const CustomTextField({super.key});
+
+  final String text;
+  final TextEditingController? controller;
+  final Function(String)? callback;
+  final IconData iconData;
+
+  const CustomTextField({super.key,required this.iconData,required this.text,this.callback,this.controller});
 
   @override
   ConsumerState<CustomTextField> createState() => _CustomTextFieldState();
@@ -17,22 +23,15 @@ class _CustomTextFieldState extends ConsumerState<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: HomeController.searchController,
-      onFieldSubmitted: (v){
-          if(v.isEmpty){
-            ref.read(apisOperationProvider.notifier).getAllResponseApi();
-          }else{
-            ref.read(apisOperationProvider.notifier).getUserById(int.parse(v));
-          }
-
-      },
+      controller: widget.controller,
+      onFieldSubmitted:widget.callback,
       keyboardType: TextInputType.number,
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly
       ],
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search),
-          hintText: "Search Product By Id",
+          prefixIcon: Icon(widget.iconData),
+          hintText:widget.text,
           border: OutlineInputBorder(
           borderSide: BorderSide(color: AppColor.black),
           borderRadius: BorderRadius.circular(15),

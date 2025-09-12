@@ -1,91 +1,90 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:https_methods_implements/framework/repository/homerepository/module/api_delete.dart';
 import 'package:https_methods_implements/framework/repository/homerepository/module/api_error.dart';
 import 'package:https_methods_implements/framework/repository/homerepository/module/fetchdata_model.dart';
 import 'package:https_methods_implements/framework/repository/homerepository/repository/apis_repository.dart';
-import 'package:riverpod/riverpod.dart';
 
-final apisOperationProvider = AsyncNotifierProvider<ApisOperationAsyncNotifier,List<FetchData>>(() {
 
+final apisOperationProvider = ChangeNotifierProvider((ref){
   return ApisOperationAsyncNotifier();
-
-} );
-
+});
 
 
-class ApisOperationAsyncNotifier extends AsyncNotifier<List<FetchData>>{
 
-  @override
-  List<FetchData> build() {
-    // TODO: implement build
-    return [];
+class ApisOperationAsyncNotifier extends ChangeNotifier{
+
+  List<FetchData> fetchData = [];
+  bool isLoading = false;
+
+  updateLoader(bool val){
+    isLoading = val;
+    notifyListeners();
   }
-
   void getAllResponseApi()async{
 
-    state = AsyncLoading();
+    updateLoader(true);
 
     String response = await ApiImplements().getAll();
 
-    List<FetchData> data = fetchDataFromJson(response);
+    if(response.contains("error")){
+      fetchData = [FetchData(apiError: ApiError(error: jsonDecode(response)['error']))];
+    }else{
+      fetchData = fetchDataFromJson(response);
+    }
 
-    state =  AsyncValue.data(data);
+
+
+    updateLoader(false);
+    notifyListeners();
 
   }
 
   void getUserById(int id)async{
-
-    state = AsyncLoading();
-
+    updateLoader(true);
     String response = await ApiImplements().getSingleObjectById(id);
 
     if(response.contains("error")){
-
-      FetchData fetchData = FetchData(apiError: ApiError(error:json.decode(response)['error']));
-
-      state = AsyncValue.data([fetchData]);
-
+      fetchData = [FetchData(apiError: ApiError(error:json.decode(response)['error']))];
     }else{
-
-      List<FetchData> data = fetchDataFromJson(response);
-
-      state =  AsyncValue.data(data);
-
+       fetchData =[ FetchData.fromJson(jsonDecode(response))];
     }
-
+    updateLoader(false);
+    notifyListeners();
   }
 
 
-  Future<bool> postUserOnServer()async{
+  Future<String> postUserOnServer(FetchData fetchData)async{
 
-     http.Response response = await ApiImplements().postData();
+    http.Response response = await ApiImplements().postData(fetchData);
 
     if(response.statusCode==200){
-      return true;
+      return jsonDecode(response.body).toString();
     }else{
-      return false;
+      return jsonDecode(response.body)['error'].toString();
     }
 
   }
 
 
 
-  Future<bool> deleteUserOnServer(int id)async{
+  Future<ApiDelete> deleteUserOnServer(int id)async{
 
+    // updateLoader(true);
     http.Response response = await ApiImplements().deleteData(id);
 
     if(response.statusCode==200){
-
-      return true;
+      print(response.body);
+      // updateLoader(false);
+      return ApiDelete(massage:jsonDecode(response.body)['message']);
     }else{
-      return false;
+      // updateLoader(false);
+      return ApiDelete(error:jsonDecode(response.body)['error']);
     }
 
   }
-
-
-
-
 }
