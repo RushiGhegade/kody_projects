@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:dio_methods_curd/framework/controller/homecontroller/home_controller.dart';
@@ -15,47 +14,47 @@ import '../theme/app_color.dart';
 ///  these help to change the profile of the user
 ///  in profile screen
 class ChangeImage extends ConsumerStatefulWidget {
-
   final int id;
 
-  const ChangeImage({super.key,required this.id});
+  const ChangeImage({super.key, required this.id});
 
   @override
   ConsumerState<ChangeImage> createState() => _ChangeChangeImage();
 }
 
 class _ChangeChangeImage extends ConsumerState<ChangeImage> {
-
   PlatformFile? file;
 
   @override
   Widget build(BuildContext context) {
     // var userInfo = ref.watch(getUserData(widget.id));
-    return  SingleChildScrollView(
+    final val = ref.read(imageLoadProvider);
+    return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         spacing: 10,
 
         children: [
-
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               GestureDetector(
-                  onTap: (){
-                    Navigator.pop(context);
-                  },
-                  child:Icon(Icons.close,)),
-              SizedBox(height: 10,)
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Icon(Icons.close),
+              ),
+              SizedBox(height: 10),
             ],
           ),
 
+          if (val > 0 && val <= 1) // Show only during upload
+            LinearProgressIndicator(value: val, color: AppColor.success),
+
           Center(
             child: Column(
-
               spacing: 9,
               children: [
-
                 GestureDetector(
                   onTap: () async {
                     print("Function Call");
@@ -71,11 +70,8 @@ class _ChangeChangeImage extends ConsumerState<ChangeImage> {
                       color: AppColor.textColor.withOpacity(0.2),
                     ),
                     child: (file != null)
-                        ? Image.file(File(file!.path!),fit: BoxFit.cover,)
-                        : Icon(
-                       Icons.person,
-                      color: AppColor.textColor,
-                    ),
+                        ? Image.file(File(file!.path!), fit: BoxFit.cover)
+                        : Icon(Icons.person, color: AppColor.textColor),
                   ),
                 ),
                 if (file == null)
@@ -84,44 +80,40 @@ class _ChangeChangeImage extends ConsumerState<ChangeImage> {
             ),
           ),
 
-
-
           ElevatedButton(
             onPressed: () async {
+              if (file != null) {
+                FetchData fetchdata = await ref
+                    .read(apisOperationProvider.notifier)
+                    .postImageOnServer(widget.id, file!, ref);
 
-              if(file!=null){
+                await ref
+                    .read(apisOperationProvider.notifier)
+                    .getAllResponseApi(true);
 
-               FetchData fetchdata =await ref.read(apisOperationProvider.notifier).postImageOnServer(widget.id, file!);
+                CustomSnackBar.showMySnackBar(
+                  context,
+                  "Image Updated : ${fetchdata.message}",
+                  AppColor.success,
+                );
 
-               await ref.read(apisOperationProvider.notifier).getAllResponseApi();
+                await Future.delayed(Duration(seconds: 1));
 
-               CustomSnackBar.showMySnackBar(
-                 context,
-                 "Image Updated : ${fetchdata.message}",
-                 AppColor.success,
-               );
-
-               Navigator.pop(context);
+                Navigator.pop(context);
               }
-
             },
 
             style: ElevatedButton.styleFrom(
-              backgroundColor:  file==null ? AppColor.textColor.withOpacity(0.02):AppColor.success,
+              backgroundColor: file == null
+                  ? AppColor.textColor.withOpacity(0.02)
+                  : AppColor.success,
             ),
-            child: CustomTextWidget(
-              text: "Submit",
-              color: AppColor.white,
-            ),
+            child: CustomTextWidget(text: "Submit", color: AppColor.white),
           ),
 
-
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
         ],
       ),
     );
-
   }
 }

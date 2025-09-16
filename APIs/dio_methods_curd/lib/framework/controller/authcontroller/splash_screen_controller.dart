@@ -4,6 +4,7 @@ import '../../../ui/home/home_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../repository/homerepository/repository/apis_repository.dart';
 import '../homecontroller/home_controller_provider.dart';
 
 class SplashScreenController{
@@ -18,17 +19,16 @@ class SplashScreenController{
 
     Future.delayed(Duration(seconds: 1),(){
 
-      ref.read(apisOperationProvider.notifier).getAllResponseApi();
 
-      if(context.mounted){
+      // fetch all data first time when go home screen
+      ref.read(apisOperationProvider.notifier).getAllResponseApi(false);
+
+      if(context.mounted){  // it check the mounted or not
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
             return HomeScreen();
           }));
-
       }
-
     });
-
 
   }
 

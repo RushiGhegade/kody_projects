@@ -9,44 +9,96 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../repository/homerepository/module/fetchdata_model.dart';
 
 
+
+/// make the provider to perform the operation on api
+/// get , delete , update this operation is perform through this controller
 final apisOperationProvider = ChangeNotifierProvider((ref){
   return ApisOperationAsyncNotifier();
 });
 
-
-
 class ApisOperationAsyncNotifier extends ChangeNotifier{
 
+  // store the data that come form api
   FetchData? fetchData ;
+
+  // it help you to identify the loading status of the api
   bool isLoading = false;
+
+  // when help you to manage the search status
   bool isSearch =  false;
+
+  //when error is come the error is present here
   String? error;
 
+  // for pagination
+  bool hasMoreData = true;
+  int page =1;
+  final int limit = 10;
 
-  void updateSearch(bool val){
-    isSearch = val;
-    notifyListeners();
-  }
 
+  // this update the loader and isSearch value
   void updateLoader(bool val,[bool val1=false]){
-
     isSearch = val1;
     isLoading = val;
     print(isSearch);
     notifyListeners();
   }
-  Future<void> getAllResponseApi()async{
+
+  // get operation
+  Future<void> getAllResponseApi(bool pageFlag)async{
+
+    if(pageFlag){
+      fetchData!.data = [];
+      hasMoreData =true;
+      page=1;
+    }
+
+    if(isLoading || !hasMoreData){
+      return;
+    }
 
     error=null;
 
-    updateLoader(true);
+    if(page==1){
+      updateLoader(true);
+    }
+
     try{
 
-      Response response = await ApiImplements().getAllBrand();
+      Response response = await ApiImplements().getAllBrand(page,limit);
       print(response.data.runtimeType);
       // print("--------------- ${response.data}");
 
-      fetchData = fetchDataFromJson(jsonEncode(response.data));
+      if(fetchData==null){
+        print("add first time data page = $page");
+        page=1;
+        fetchData = fetchDataFromJson(jsonEncode(response.data));
+        if(fetchData!.data!.length < limit){
+          hasMoreData = false;
+        }
+        page++;
+      }else{
+        print("add Second time data page = $page");
+        FetchData fetch = fetchDataFromJson(jsonEncode(response.data));
+
+        if(fetch.data!.length < limit){
+          hasMoreData = false;
+        }
+
+        if(fetch.data!.isEmpty){
+
+          hasMoreData = false;
+
+        }else{
+
+          fetchData!.data!.addAll(fetch.data!);
+          page++;
+        }
+
+
+      }
+
+
 
       print(" -----------------  $fetchData");
     }catch (e){
@@ -58,6 +110,7 @@ class ApisOperationAsyncNotifier extends ChangeNotifier{
     }
   }
 
+  // get by id operation
   Future<void> getBrandById(int id)async{
     error=null;
     // updateSearch(true);
@@ -89,10 +142,7 @@ class ApisOperationAsyncNotifier extends ChangeNotifier{
 
   }
 
-  Future<String> patchUserData(int id,FetchData fetchData)async{
-   return "";
-  }
-
+  // post the user on the server
   Future<FetchData> postUserOnServer(Datum data)async{
 
     error=null;
@@ -126,6 +176,7 @@ class ApisOperationAsyncNotifier extends ChangeNotifier{
     }
   }
 
+  //  delete the user on the server
   Future<FetchData> deleteUserOnServer(int id)async{
 
     error=null;
@@ -159,7 +210,7 @@ class ApisOperationAsyncNotifier extends ChangeNotifier{
 
   }
 
-
+  // it help to update the data
   Future<FetchData> updateData(int id,Datum data)async{
     error=null;
 
@@ -193,16 +244,15 @@ class ApisOperationAsyncNotifier extends ChangeNotifier{
     }
   }
 
-
-
-  Future<FetchData> postImageOnServer(int id,PlatformFile file)async{
+  //  post the user on the server
+  Future<FetchData> postImageOnServer(int id,PlatformFile file,WidgetRef ref)async{
 
     error=null;
 
     updateLoader(true,true);
     try{
 
-      Response response = await ApiImplements().imageChange(id, file);
+      Response response = await ApiImplements().imageChange(id, file,ref);
 
       print(response.data.runtimeType);
       print(response.data);
@@ -213,7 +263,6 @@ class ApisOperationAsyncNotifier extends ChangeNotifier{
         );
       }else{
         print("I am Here 2");
-
         return FetchData(
           message:  "Image Not Uploaded ",
         );

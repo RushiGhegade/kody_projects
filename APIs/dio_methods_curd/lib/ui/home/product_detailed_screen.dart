@@ -12,10 +12,10 @@ class ProductDetailedScreen extends ConsumerWidget {
   const ProductDetailedScreen({super.key, required this.fetchData});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return WillPopScope(
-      onWillPop: ()async{
-        ref.read(apisOperationProvider.notifier).getAllResponseApi();
+      onWillPop: () async {
+        ref.read(apisOperationProvider.notifier).getAllResponseApi(true);
         return true;
       },
       child: Scaffold(
@@ -50,7 +50,7 @@ class ProductDetailedScreen extends ConsumerWidget {
                 );
               }
 
-              if (data.fetchData!.singleData!=null) {
+              if (data.fetchData!.singleData != null) {
                 Datum d = data.fetchData!.singleData!;
                 return Column(
                   // mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +88,8 @@ class ProductDetailedScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                     ),
                     CustomTextWidget(
-                      text: "Product Description  : ${d.description ?? "No Discription"}",
+                      text:
+                          "Product Description  : ${d.description ?? "No Discription"}",
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
@@ -96,12 +97,12 @@ class ProductDetailedScreen extends ConsumerWidget {
                 );
               }
 
-
               return Expanded(
-                child: const Center(child: CustomTextWidget(text: "No Data Found")),
+                child: const Center(
+                  child: CustomTextWidget(text: "No Data Found"),
+                ),
               );
             },
-
           ),
         ),
       ),

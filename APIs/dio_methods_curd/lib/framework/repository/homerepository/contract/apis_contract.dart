@@ -1,13 +1,14 @@
 
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../module/fetchdata_model.dart';
 
 abstract class Api{
 
   //  make these method to call get all data api
-  Future<Response> getAllBrand();
+  Future<Response> getAllBrand(int page,int limit);
 
   // get brand by id
   Future<Response> getBrandById(int id);
@@ -22,6 +23,6 @@ abstract class Api{
   Future<Response> deleteData(int id);
 
   // change Image
-  Future<Response> imageChange(int id,PlatformFile file);
+  Future<Response> imageChange(int id,PlatformFile file,WidgetRef ref);
 
 }

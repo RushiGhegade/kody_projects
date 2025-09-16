@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ApiImplements().addInterceptorInDio();
+
     return ProviderScope(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

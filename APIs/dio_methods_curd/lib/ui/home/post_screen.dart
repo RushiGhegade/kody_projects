@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../framework/controller/homecontroller/home_controller_provider.dart';
 import '../../framework/repository/homerepository/module/fetchdata_model.dart';
 import '../utils/theme/app_color.dart';
+import '../utils/widgets/change_image.dart';
 import '../utils/widgets/custom_snackbar.dart';
 import '../utils/widgets/custom_text_field.dart';
 import '../utils/widgets/custom_text_widget.dart';
@@ -57,17 +58,19 @@ class _PostScreenState extends State<PostScreen> {
                       print(dis.text);
 
                       if (productName.text.isNotEmpty && dis.text.isNotEmpty) {
-
                         Datum data = Datum(
                           name: productName.text,
                           description: dis.text,
                           website: "https://apple.com",
                         );
 
+                        FetchData? feData = await ref
+                            .read(apisOperationProvider.notifier)
+                            .postUserOnServer(data);
 
-                        FetchData? feData = await ref.read(apisOperationProvider.notifier).postUserOnServer(data);
-
-                        ref.read(apisOperationProvider.notifier).getAllResponseApi();
+                        ref
+                            .read(apisOperationProvider.notifier)
+                            .getAllResponseApi(true);
 
                         CustomSnackBar.showMySnackBar(
                           context,
@@ -98,12 +101,13 @@ class _PostScreenState extends State<PostScreen> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
+
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.error,
+                    ),
                     child: CustomTextWidget(
                       text: "Cancel",
                       color: AppColor.black,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.error,
                     ),
                   ),
                 ],
@@ -115,6 +119,4 @@ class _PostScreenState extends State<PostScreen> {
       ),
     );
   }
-
-
 }
